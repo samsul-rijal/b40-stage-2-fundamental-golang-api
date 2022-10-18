@@ -9,9 +9,10 @@ import (
 )
 
 func UserRoutes(r *mux.Router) {
-	userRepository := repositories.RepositoryUser(mysql.DB)
+	userRepository := repositories.RepositoryUser(mysql.DB) //dari repo
+	// masuk ke handler
 	h := handlers.HandlerUser(userRepository)
 
 	r.HandleFunc("/users", h.FindUsers).Methods("GET")
-	// r.HandleFunc("/user/{id}", h.GetUser).Methods("GET")
+	r.HandleFunc("/users/{id}", h.GetUser).Methods("GET")
 }
