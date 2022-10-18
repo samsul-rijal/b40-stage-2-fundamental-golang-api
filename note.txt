@@ -1,0 +1,13 @@
+models/entities = data type table
+handler = request response dan logic
+repositories = interaksi ke database, (CRUD)
+routes = routing
+dto = data type request body dan response
+database = untuk migrate/create table
+pkg = untuk menambahkan package
+
+pointer 
+
+buat dto untuk handle data type request body dan response json
+
+models -> repository -> handler -> route
