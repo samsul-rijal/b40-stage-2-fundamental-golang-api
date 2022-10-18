@@ -6,8 +6,7 @@ dto = data type request body dan response
 database = untuk migrate/create table
 pkg = untuk menambahkan package
 
-pointer 
+pointer
 
 buat dto untuk handle data type request body dan response json
-
 models -> repository -> handler -> route
