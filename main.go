@@ -35,6 +35,9 @@ func main() {
 	// Create routes here ...
 	r.HandleFunc("/todos", FindTodos).Methods("GET")
 	r.HandleFunc("/todos/{id}", GetTodo).Methods("GET")
+	r.HandleFunc("/todos", CreateTodo).Methods("POST")
+	r.HandleFunc("/todos/{id}", UpdateTodo).Methods("PATCH")
+	r.HandleFunc("/todos/{id}", DeleteTodo).Methods("DELETE")
 
 	fmt.Println("server running localhost:5000")
 	http.ListenAndServe("localhost:5000", r)
@@ -76,7 +79,69 @@ func GetTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 // Create CreateTodo Function here ...
+func CreateTodo(w http.ResponseWriter, r *http.Request) {
+	var data Todos
+
+	json.NewDecoder(r.Body).Decode(&data)
+
+	todos = append(todos, data)
+	// todos.push(data)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(todos)
+}
 
 // Create UpdateTodo Function here ...
+func UpdateTodo(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["id"]
+	var data Todos
+	var isGetTodo = false
+
+	json.NewDecoder(r.Body).Decode(&data)
+
+	for idx, todo := range todos {
+		if id == todo.Id {
+			isGetTodo = true
+			todos[idx] = data
+		}
+	}
+
+	if isGetTodo == false {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode("ID: " + id + " not found")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(todos)
+}
 
 // Create DeleteTodo Function here ...
+func DeleteTodo(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["id"]
+	var isGetTodo = false
+	var index = 0
+
+	for idx, todo := range todos {
+		if id == todo.Id {
+			isGetTodo = true
+			index = idx
+		}
+	}
+
+	if isGetTodo == false {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode("ID: " + id + " not found")
+		return
+	}
+
+	todos = append(todos[:index], todos[index+1:]...)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode("ID: " + id + " delete success")
+}
