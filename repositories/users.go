@@ -1,13 +1,26 @@
 package repositories
 
-// Import "dumbmerch/models", "gorm.io/gorm"
+import (
+	"dumbmerch/models"
 
-// Declare UserRepository interface here ...
+	"gorm.io/gorm"
+)
 
-// Declare repository struct here ...
+type UserRepository interface {
+	FindUsers() ([]models.User, error)
+}
 
-// Create RepositoryUser function here ...
+type repository struct {
+	db *gorm.DB
+}
 
-// Create FindUsers method here ...
+func RepositoryUser(db *gorm.DB) *repository {
+	return &repository{db}
+}
 
-// Create GetUser method here ...
+func (r *repository) FindUsers() ([]models.User, error) {
+	var users []models.User
+	err := r.db.Raw("SELECT * FROM users").Scan(&users).Error
+
+	return users, err
+}
